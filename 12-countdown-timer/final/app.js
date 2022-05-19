@@ -25,24 +25,47 @@ const giveaway = document.querySelector('.giveaway');
 const deadline = document.querySelector('.deadline');
 const items = document.querySelectorAll('.deadline-format h4');
 
+// The Date() constructor and its methods return 24hr time format
+// (Day Month Date Year HH:MM:SS)
+// ex: "Monday July 1 2020 00:25:00"
 let tempDate = new Date();
 let tempYear = tempDate.getFullYear();
 let tempMonth = tempDate.getMonth();
 let tempDay = tempDate.getDate();
 // months are ZERO index based;
-const futureDate = new Date(tempYear, tempMonth, tempDay + 10, 11, 30, 0);
 
-// let futureDate = new Date(2020, 3, 24, 11, 30, 0);
+// Date modifiers to setup the constant futureDate and time.
+// Set futureDate up here, don't modify the const directly. futureDate remains constant after declaration.
+// unless these values are changed prior to next execution.
+let tempDay = tempDate.getDate() + 10;
+let tempHours= 11;
+let tempMinutes= 30;
+let tempSeconds= 0;
+
+const futureDate = new Date(tempYear, tempMonth, tempDay, tempHours, tempMinutes, tempSeconds);
 
 const year = futureDate.getFullYear();
 const hours = futureDate.getHours();
 const minutes = futureDate.getMinutes();
 
+// Add some variables to fix/change presentation of the date string in giveaway.textContent
+var displayHours = hours;
+var displayMinutes = minutes;
+var meridiem = "AM";
+
+// Add leading zero to output of giveaway.textContent if minutes is < 10
+displayMinutes  = (displayMinutes < 10) ? "0" + displayMinutes : displayMinutes;
+
+// Convert 24hr format (default) to 12 hour format with AM/PM, 00:00:00 displays as 12:00:00 AM
+meridiem = (displayHours >= 12) ? "PM" : "AM";
+displayHours = (hours > 12) ? displayHours -12 : hours;
+displayHours = (hours == 0) ? 12 : displayHours;
+
 let month = futureDate.getMonth();
 month = months[month];
 const weekday = weekdays[futureDate.getDay()];
 const date = futureDate.getDate();
-giveaway.textContent = `giveaway ends on ${weekday}, ${date} ${month} ${year} ${hours}:${minutes}am`;
+giveaway.textContent = `giveaway ends on ${weekday}, ${date} ${month} ${year} ${displayHours}:${displayMinutes} ${meridiem}`;
 
 const futureTime = futureDate.getTime();
 function getRemaindingTime() {
